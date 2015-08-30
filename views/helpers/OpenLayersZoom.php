@@ -155,25 +155,15 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     {
         $tileUrl = $this->getTileUrl($file);
         if ($tileUrl) {
-            // Root is not used in the javascript, but only here.
-            list($root, $ext) = $this->_creator->getRootAndExtension($file->filename);
-
             // Grab the width/height of the original image.
             list($width, $height, $type, $attr) = getimagesize(FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR . $file->filename);
 
-            // If the var is set then they are requesting a specific image to be
-            // zoomed not just the first.
-            // This is kind of a hack to get around some problems with OpenLayers
-            // displaying multiple zoomify layers on a single page.
-            // It doesn't even come into play if there is just one zoomed image
-            // per record.
-            $open_zoom_layer_req = isset($_REQUEST['open_zoom_layer_req'])
-                ? html_escape($_REQUEST['open_zoom_layer_req'])
-                : '-1';
+            $target = 'map-' . $file->id;
 
-            $html = '<script type="text/javascript">'
-                . 'open_layers_zoom_add_zoom("' . $root . '","' . $width . '","' . $height . '","' . $tileUrl . '/",' . $open_zoom_layer_req . ');'
-            . '</script>';
+            $html = '<div id="' . $target . '" class="map"></div>';
+            $html .= sprintf(
+                '<script type="text/javascript">open_layers_zoom("%s",%d,%d,%s)</script>',
+                $target, $width, $height, json_encode($tileUrl . '/'));
 
             return $html;
         }

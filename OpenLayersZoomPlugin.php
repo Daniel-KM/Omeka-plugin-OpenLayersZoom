@@ -189,9 +189,9 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
                 && $request->getActionName() == 'show'
                 && $view->openLayersZoom()->zoomedFilesCount($view->item) > 0
             ) {
-            queue_css_file('OpenLayersZoom');
+            queue_css_file('ol');
             queue_js_file(array(
-                'OpenLayers',
+                'ol',
                 'OpenLayersZoom',
             ));
         }
@@ -386,8 +386,8 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
 
         $html = $view->openLayersZoom()->zoom($record);
         if ($html) {
-            $html = '<link href="' . css_src('OpenLayersZoom') . '" media="all" rel="stylesheet" type="text/css" >'
-                . js_tag('OpenLayers')
+            $html = '<link href="' . css_src('ol') . '" media="all" rel="stylesheet" type="text/css" >'
+                . js_tag('ol')
                 . js_tag('OpenLayersZoom')
                 . $html;
             return $html;
