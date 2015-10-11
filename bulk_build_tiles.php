@@ -10,12 +10,13 @@
 	// Building tiles asks for more memory than usual php, maybe need to modify default setting
 	ini_set("memory_limit", "1024M");
 	// max_picture_size in bytes, to prevent memory errors for big files
-	$max_picture_size = 29900000;
-	$collection_id = "";
+	$max_picture_size = 256000000;
+	$collection_id = 0;
+	$item_id = 0;
 
-	if ($collection_id == "")
+	if (empty($collection_id) && empty($item_id))
 	{
-		print "Please provide a collection_id\n";
+		print "Please provide a collection id or an item id directly in this script.\n";
 		die;
 	}
 
@@ -42,10 +43,16 @@
 	FROM {$db->File} files, {$db->Item} items
 	WHERE files.item_id = items.id ";
 
-	if ($collection_id != "")
+	// Process a collection.
+	if ($collection_id > 0)
 	{
 		$sql .= " AND items.collection_id = $collection_id";
 	}
+	// Process an item.
+	else {
+		$sql .= " AND items.id = $item_id";
+	}
+
 	$file_ids = $db->fetchAll($sql);
 	$originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
