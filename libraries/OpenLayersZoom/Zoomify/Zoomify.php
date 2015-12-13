@@ -99,7 +99,8 @@ class zoomify
      */
     public function listZoomifiedImages($dir)
     {
-        if ($dh = @opendir($dir)) {
+        $dh = @opendir($dir);
+        if ($dh) {
             while (false !== ($filename = readdir($dh))) {
                 if (($filename != '.')
                         && ($filename != '..')
@@ -125,7 +126,8 @@ class zoomify
      */
     protected function getImageList($dir)
     {
-        if ($dh = @opendir($dir)) {
+        $dh = @opendir($dir);
+        if ($dh) {
             while (false !== ($filename = readdir($dh))) {
                 if (($filename != '.')
                         && ($filename != '..')
@@ -155,7 +157,8 @@ class zoomify
      */
     protected function getDirList($dir)
     {
-        if ($dh = @opendir($dir)) {
+        $dh = @opendir($dir);
+        if ($dh) {
             while (false !== ($filename = readdir($dh))) {
                 if (($filename != '.')
                         && ($filename != '..')

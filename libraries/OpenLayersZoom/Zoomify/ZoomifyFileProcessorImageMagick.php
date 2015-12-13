@@ -379,7 +379,7 @@ class ZoomifyFileProcessor
                 $firstRowImage->destroy();
                 unlink($firstRowFile);
                 if ($this->_debug) {
-                    print "imageRow imagecopyresized tierWidth=$tierWidth imageRowHalfHeight= $imageRowHalfHeight firstRowWidth=$firstRowWidth firstRowHeight=$firstRowHeight<br />" . PHP_EOL;
+                    print "imageRow imagecopyresized tierWidth=$tierWidth imageRowHalfHeight=" . floor($this->tileSize / 2) . " firstRowWidth=$firstRowWidth firstRowHeight=$firstRowHeight<br />" . PHP_EOL;
                 }
             }
 
