@@ -34,6 +34,8 @@ class zoomify
     public $dirMode = 0755;
     public $fileGroup = 'www-data';
 
+    public $imagePath = '';
+
     /**
      * Constructor
      * Initialize process, set class vars
@@ -42,7 +44,7 @@ class zoomify
      */
     function __construct($imagepath)
     {
-        define('IMAGEPATH', $imagepath);
+        $this->imagePath = $imagepath;
         $this->fileMode = $this->fileMode;
         $this->dirMode = $this->dirMode;
     }
@@ -82,10 +84,10 @@ class zoomify
      */
     public function processImages()
     {
-        $objects = $this->getImageList(IMAGEPATH);
+        $objects = $this->getImageList($this->imagePath);
 
         foreach ($objects as $object) {
-            $this->zoomifyObject($object, IMAGEPATH);
+            $this->zoomifyObject($object, $this->imagePath);
         }
     }
 
