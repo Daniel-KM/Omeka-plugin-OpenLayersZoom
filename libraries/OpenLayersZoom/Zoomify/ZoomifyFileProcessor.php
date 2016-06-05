@@ -344,8 +344,9 @@ class ZoomifyFileProcessor
                 $secondRowImage = imagecreatefromjpeg($secondRowFile);
                 $secondRowWidth = imagesx($secondRowImage);
                 $secondRowHeight = imagesy($secondRowImage);
+                $imageRowHalfHeight = floor($this->tileSize / 2);
                 if ($this->_debug) {
-                    print "imageRow imagecopyresized tierWidth=$tierWidth imageRowHalfHeight= $imageRowHalfHeight firstRowWidth=$firstRowWidth firstRowHeight=$firstRowHeight<br />" . PHP_EOL;
+                    print "imageRow imagecopyresized tierWidth=$tierWidth imageRowHalfHeight=$imageRowHalfHeight firstRowWidth=$firstRowWidth firstRowHeight=$firstRowHeight<br />" . PHP_EOL;
                 }
                 // imagecopy(resource dst_im, resource src_im, int dst_x, int dst_y, int src_x, int src_y, int src_w, int src_h )
                 // imagecopy($imageRow, $secondRowImage, 0, $firstRowWidth, 0, 0, $firstRowWidth, $firstRowHeight);
