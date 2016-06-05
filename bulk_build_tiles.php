@@ -3,6 +3,8 @@
 	* bulk_build_tiles.php
 	* This script will build all zoom_tiles for a specific collection
 	*
+	* You should edit manually the collection id or the item ids.
+	*
 	* @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
 	* @author Sylvain Machefert - Bordeaux 3
 	*/
@@ -11,12 +13,17 @@
 	ini_set("memory_limit", "1024M");
 	// max_picture_size in bytes, to prevent memory errors for big files
 	$max_picture_size = 256000000;
-	$collection_id = 0;
-	$item_id = 0;
 
-	if (empty($collection_id) && empty($item_id))
-	{
-		print "Please provide a collection id or an item id directly in this script.\n";
+	// The collection id to process.
+	$collection_id = 0;
+	// Or, when no collection is set,  the list of item ids.
+	$item_ids = array();
+
+	// Main check.
+	$collection_id = (integer) $collection_id;
+	$item_ids = array_filter(array_map('intval', $item_ids));
+	if (empty($collection_id) && empty($item_ids)) {
+		print "Please provide a collection id or a list of item ids directly in this script.\n";
 		die;
 	}
 
@@ -39,25 +46,23 @@
 	$application->initialize();
 	$db = get_db();
 
-	$sql = " SELECT item_id, filename
+	$sql = "SELECT item_id, filename
 	FROM {$db->File} files, {$db->Item} items
 	WHERE files.item_id = items.id ";
 
 	// Process a collection.
-	if ($collection_id > 0)
-	{
+	if ($collection_id > 0) {
 		$sql .= " AND items.collection_id = $collection_id";
 	}
 	// Process an item.
 	else {
-		$sql .= " AND items.id = $item_id";
+		$sql .= " AND items.id IN (". implode(', ', $item_ids) . ")";
 	}
 
 	$file_ids = $db->fetchAll($sql);
 	$originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
-	foreach ($file_ids as $one_id)
-	{
+	foreach ($file_ids as $one_id) {
 		$filename = $originalDir.$one_id["filename"];
 		$computer_size = filesize($filename);
 		$decimals = 2;
@@ -65,28 +70,28 @@
 		$factor = floor((strlen($computer_size) - 1) / 3);
 		$human_size = sprintf("%.{$decimals}f", $computer_size / pow(1024, $factor)) . @$sz[$factor];
 
-		$item_id	= $one_id["item_id"];
+		$item_id = $one_id["item_id"];
 		$fp = new ZoomifyFileProcessor();
 		list($root, $ext) = $fp->getRootAndDotExtension($filename);
 		$sourcePath = $root . '_zdata';
 		$destination = str_replace("/original/", "/zoom_tiles/", $sourcePath);
 
-		if ($computer_size > $max_picture_size)
-		{
+		if ($computer_size > $max_picture_size) {
 			print "Picture too big, skipped : $filename ($human_size)\n";
 		}
-		elseif (file_exists($destination))
-		{
+		elseif (file_exists($destination)) {
 			print "This picture has already been tiled ($destination) : $human_size ($computer_size)\n";
 		}
-		else
-		{
+		else {
 			print "En cours : ".$computer_size."\n";
 			$fp->ZoomifyProcess($filename);
 			rename($sourcePath,$destination);
 			print "Tiling $filename [$item_id]\n";
 		}
 	}
-exit;
 
+	print "\n";
+	print "Process completed.\n";
+	print "\n";
+	exit;
 ?>
