@@ -503,10 +503,12 @@ class ZoomifyFileProcessor
             //     print "getAssignedTileContainerName this->_tileGroupMappings is true" . PHP_EOL;
             // }
             if (isset($this->_tileGroupMappings) && $this->_tileGroupMappings) {
-                $containerName = $this->_tileGroupMappings[$tileFileName];
-                if ($containerName) {
-                    // print "getAssignedTileContainerName returning containerName " . $containerName ."<br />" . PHP_EOL;
-                    return $containerName;
+                if (isset($this->_tileGroupMappings[$tileFileName])) {
+                    $containerName = $this->_tileGroupMappings[$tileFileName];
+                    if ($containerName) {
+                        // print "getAssignedTileContainerName returning containerName " . $containerName ."<br />" . PHP_EOL;
+                        return $containerName;
+                    }
                 }
             }
         }
