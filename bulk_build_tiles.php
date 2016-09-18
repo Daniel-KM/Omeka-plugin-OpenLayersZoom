@@ -16,7 +16,7 @@
 
     // The collection id to process.
     $collection_id = 0;
-    // Or, when no collection is set,  the list of item ids.
+    // Or, when no collection is set, the list of item ids.
     $item_ids = array();
 
     // Main check.
@@ -46,6 +46,17 @@
     $application->initialize();
     $db = get_db();
 
+    $supportedFormats = array(
+        'jpeg' => 'JPEG Joint Photographic Experts Group JFIF format',
+        'jpg' => 'Joint Photographic Experts Group JFIF format',
+        'png' => 'Portable Network Graphics',
+        'gif' => 'Graphics Interchange Format',
+        'tif' => 'Tagged Image File Format',
+        'tiff' => 'Tagged Image File Format',
+    );
+    // Set the regular expression to match selected/supported formats.
+    $supportedFormatRegEx = '/\.' . implode('|', array_keys($supportedFormats)) . '$/i';
+
     $sql = "SELECT item_id, filename
     FROM {$db->File} files, {$db->Item} items
     WHERE files.item_id = items.id ";
@@ -64,6 +75,11 @@
 
     foreach ($file_ids as $one_id) {
         $filename = $originalDir.$one_id["filename"];
+        if (!preg_match($supportedFormatRegEx, $filename)) {
+            print "Not a picture, skipped : $filename\n";
+            continue;
+        }
+
         $computer_size = filesize($filename);
         $decimals = 2;
         $sz = 'BKMGTP';
