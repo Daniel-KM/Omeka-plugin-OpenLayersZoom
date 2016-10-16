@@ -3,7 +3,8 @@
     * bulk_build_tiles.php
     * This script will build all zoom_tiles for a specific collection
     *
-    * You should edit manually the collection id or the item ids.
+    * You should edit manually the collection id, the item ids or set "$all" to
+    * true. In all cases, processed files are not retiled.
     *
     * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
     * @author Sylvain Machefert - Bordeaux 3
@@ -18,12 +19,14 @@
     $collection_id = 0;
     // Or, when no collection is set, the list of item ids.
     $item_ids = array();
+    // Or, when collection and items are not set, images of all the items.
+    $all = false;
 
     // Main check.
     $collection_id = (integer) $collection_id;
     $item_ids = array_filter(array_map('intval', $item_ids));
-    if (empty($collection_id) && empty($item_ids)) {
-        print "Please provide a collection id or a list of item ids directly in this script.\n";
+    if (empty($collection_id) && empty($item_ids) && !$all) {
+        print 'Please provide a collection id, a list of item ids or set "$all" to true directly in this script.' . "\n";
         die;
     }
 
@@ -66,8 +69,12 @@
         $sql .= " AND items.collection_id = $collection_id";
     }
     // Process an item.
-    else {
+    elseif ($item_ids) {
         $sql .= " AND items.id IN (". implode(', ', $item_ids) . ")";
+    }
+    // Process all items.
+    elseif ($all) {
+        // Nothing to add.
     }
 
     $file_ids = $db->fetchAll($sql);
