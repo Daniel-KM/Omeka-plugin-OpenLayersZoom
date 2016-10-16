@@ -181,7 +181,7 @@ class ZoomifyFileProcessor
         // If the paths already exist, an image is being re-processed, clean up
         // for it.
         if (is_dir($this->_saveToLocation)) {
-            $rm_err = $this->_rmTiles($this->_saveToLocation);
+            $rm_err = $this->_rmDir($this->_saveToLocation);
         }
         mkdir($this->_saveToLocation);
         @chmod($this->_saveToLocation, $this->dirMode);
@@ -569,22 +569,23 @@ class ZoomifyFileProcessor
     }
 
     /**
-     * Remove a dir of tiles from filesystem.
+     * Remove a dir from filesystem.
      *
+     * @param string $dirpath
      * @return boolean
      */
-    protected function _rmTiles($dirPath)
+    protected function _rmDir($dirPath)
     {
-        $glob = glob($dirPath);
-        foreach ($glob as $g) {
-            if (!is_dir($g)) {
-                unlink($g);
+        $files = array_diff(scandir($dirPath), array('.', '..'));
+        foreach ($files as $file) {
+            $path = $dirPath . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                $this->_rmDir($path);
             }
             else {
-                $this->_rmTiles("$g/*");
-                rmdir($g);
+                unlink($path);
             }
         }
-        return true;
+        return rmdir($dirPath);
     }
 }

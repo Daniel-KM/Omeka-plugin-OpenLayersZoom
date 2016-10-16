@@ -32,12 +32,8 @@ function rm($fileglob)
         if (is_file($fileglob)) {
             return unlink($fileglob);
         }
-        else if (is_dir($fileglob)) {
-            $ok = rm("$fileglob/*");
-            if (! $ok) {
-                return false;
-            }
-            return rmdir($fileglob);
+        elseif (is_dir($fileglob)) {
+            return _rrmdir($fileglob);
         }
         else {
             $matching = glob($fileglob);
@@ -62,6 +58,27 @@ function rm($fileglob)
         return false;
     }
     return true;
+}
+
+/**
+ * Removes directories recursively.
+ *
+ * @param string $dirPath Directory name.
+ * @return boolean
+ */
+function _rrmdir($dirPath)
+{
+    $files = array_diff(scandir($dirPath), array('.', '..'));
+    foreach ($files as $file) {
+        $path = $dirPath . DIRECTORY_SEPARATOR . $file;
+        if (is_dir($path)) {
+            _rrmDir($path);
+        }
+        else {
+            unlink($path);
+        }
+    }
+    return rmdir($dirPath);
 }
 
 /**
