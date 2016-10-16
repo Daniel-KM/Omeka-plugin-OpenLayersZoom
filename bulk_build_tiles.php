@@ -23,9 +23,18 @@
     // Or, when collection and items are not set, images of all the items.
     $all = false;
 
-    // Main check.
+    // Process selected files, except these ones. This may be usefull when a
+    // collection is selected, or when all files are selected.
+    $except_collection_ids = array();
+    $except_items_ids = array();
+    $except_files_ids = array();
+
+    // Main checks.
     $collection_id = (integer) $collection_id;
     $item_ids = array_filter(array_map('intval', $item_ids));
+    $except_collection_ids = array_filter(array_map('intval', $except_collection_ids));
+    $except_items_ids = array_filter(array_map('intval', $except_items_ids));
+    $except_files_ids = array_filter(array_map('intval', $except_files_ids));
 
     require_once dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
     require_once(APP_DIR . '/libraries/globals.php');
@@ -80,7 +89,23 @@
         // Nothing to add.
     }
 
+    if ($except_collection_ids) {
+        $sql .= " AND items.collection_id NOT IN (". implode(',', $except_collection_ids) . ")";
+    }
+    if ($except_items_ids) {
+        $sql .= " AND items.id NOT IN (". implode(',', $except_items_ids) . ")";
+    }
+    if ($except_files_ids) {
+        $sql .= " AND files.id NOT IN (". implode(',', $except_files_ids) . ")";
+    }
+
     $file_ids = $db->fetchAll($sql);
+
+    if (empty($file_ids)) {
+        echo __('No file to process: check the selection.') . "\n";
+        exit;
+    }
+
     $originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
     foreach ($file_ids as $one_id) {
