@@ -77,7 +77,7 @@
     // Set the regular expression to match selected/supported formats.
     $supportedFormatRegEx = '/\.' . implode('|', array_keys($supportedFormats)) . '$/i';
 
-    $sql = "SELECT item_id, filename
+    $sql = "SELECT files.item_id AS item_id, files.filename AS filename, files.id AS file_id
     FROM {$db->File} files, {$db->Item} items
     WHERE files.item_id = items.id ";
 
@@ -114,39 +114,46 @@
     $originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
     foreach ($file_ids as $one_id) {
-        $filename = $originalDir . $one_id['filename'];
+        $filename = $one_id['filename'];
+        $filepath = $originalDir . $filename;
+        $item_id = $one_id['item_id'];
+        $file_id = $one_id['file_id'];
         if (!preg_match($supportedFormatRegEx, $filename)) {
             if ($all_messages) {
-                echo __('Not a picture, skipped: %s', $filename) . "\n";
+                echo __('Not a picture, skipped: #%d "%s" (item #%d)',
+                    $file_id, $filename, $item_id) . "\n";
             }
             continue;
         }
 
-        $computer_size = filesize($filename);
+        $computer_size = filesize($filepath);
         $decimals = 2;
         $sz = 'BKMGTP';
         $factor = floor((strlen($computer_size) - 1) / 3);
         $human_size = sprintf("%.{$decimals}f", $computer_size / pow(1024, $factor)) . @$sz[$factor];
 
-        $item_id = $one_id['item_id'];
         $fp = new ZoomifyFileProcessor();
-        list($root, $ext) = $fp->getRootAndDotExtension($filename);
+        list($root, $ext) = $fp->getRootAndDotExtension($filepath);
         $sourcePath = $root . '_zdata';
         $destination = str_replace('/original/', '/zoom_tiles/', $sourcePath);
 
         if ($computer_size > $max_picture_size) {
-            echo __('Picture too big, skipped: %s (%s)', $filename, $human_size) . "\n";
+            echo __('Picture too big, skipped: #%d "%s" (item #%d, size: %s)',
+                $file_id, $filename, $item_id, $human_size) . "\n";
         }
         elseif (file_exists($destination)) {
             if ($all_messages) {
-                echo __('This picture has already been tiled (%s): %s (%d bytes)', $destination, $human_size, $computer_size) . "\n";
+                echo __('This picture has already been tiled: #%d "%s" (item #%d, size: %s)',
+                    $file_id, $filename, $item_id, $human_size) . "\n";
             }
         }
         else {
-            echo __('Processing... (file size: %d)', $computer_size) . "\n";
-            $fp->ZoomifyProcess($filename);
+            echo __('Processing file #%d "%s" (item #%d, size: %s)...',
+                $file_id, $filename, $item_id, $human_size) . "\n";
+            $fp->ZoomifyProcess($filepath);
             rename($sourcePath, $destination);
-            echo __('Tiled %s [#%d]', $filename, $item_id) . "\n";
+            echo __('Tiled file #%d "%s" (item #%d)',
+                $file_id, $filename, $item_id) . "\n";
         }
     }
 
