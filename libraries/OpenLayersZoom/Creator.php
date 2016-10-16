@@ -38,7 +38,7 @@ class OpenLayersZoom_Creator
             if (!is_dir(dirname($destinationPath))) {
                 $result = mkdir(dirname($destinationPath), 0755, true);
                 if (!$result) {
-                    $message = __('Impossible to create destination directory: "%s" for file "%s".', $destinationPath, basename($filename));
+                    $message = __('Unable to create destination directory: "%s" for file "%s".', $destinationPath, basename($filename));
                     _log($message, Zend_Log::WARN);
                     throw new Omeka_Storage_Exception($message);
                 }
