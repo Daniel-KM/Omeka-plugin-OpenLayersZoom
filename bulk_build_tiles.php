@@ -10,9 +10,10 @@
     * @author Sylvain Machefert - Bordeaux 3
     */
 
-    // Building tiles asks for more memory than usual php, maybe need to modify default setting
-    ini_set("memory_limit", "1024M");
-    // max_picture_size in bytes, to prevent memory errors for big files
+    // Building tiles asks for more memory than usual php, maybe need to modify
+    // default setting.
+    ini_set('memory_limit', '1024M');
+    // max_picture_size in bytes, to prevent memory errors for big files.
     $max_picture_size = 256000000;
 
     // The collection id to process.
@@ -25,18 +26,20 @@
     // Main check.
     $collection_id = (integer) $collection_id;
     $item_ids = array_filter(array_map('intval', $item_ids));
+
+    require_once dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
+    require_once(APP_DIR . '/libraries/globals.php');
+    require_once('OpenLayersZoomPlugin.php');
+    require_once('libraries/OpenLayersZoom/Zoomify/ZoomifyFileProcessor.php');
+
     if (empty($collection_id) && empty($item_ids) && !$all) {
-        print 'Please provide a collection id, a list of item ids or set "$all" to true directly in this script.' . "\n";
+        echo __('Please provide a collection id, a list of item ids or set "$all" to true directly in this script.') . "\n";
         die;
     }
 
-    require_once dirname(dirname(dirname(__FILE__))).'/bootstrap.php';
-    require_once("OpenLayersZoomPlugin.php");
-    require_once('libraries/OpenLayersZoom/Zoomify/ZoomifyFileProcessor.php');
-
     $autoloader = Zend_Loader_Autoloader::getInstance();
     $application = new Omeka_Application(APPLICATION_ENV);
-//        APP_DIR."/config/application.ini");
+//        APP_DIR . '/config/application.ini');
 
     $application->getBootstrap()->setOptions(array(
         'resources' => array(
@@ -70,7 +73,7 @@
     }
     // Process an item.
     elseif ($item_ids) {
-        $sql .= " AND items.id IN (". implode(', ', $item_ids) . ")";
+        $sql .= " AND items.id IN (". implode(',', $item_ids) . ")";
     }
     // Process all items.
     elseif ($all) {
@@ -81,9 +84,9 @@
     $originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
     foreach ($file_ids as $one_id) {
-        $filename = $originalDir.$one_id["filename"];
+        $filename = $originalDir . $one_id['filename'];
         if (!preg_match($supportedFormatRegEx, $filename)) {
-            print "Not a picture, skipped : $filename\n";
+            echo __('Not a picture, skipped: %s', $filename) . "\n";
             continue;
         }
 
@@ -93,28 +96,28 @@
         $factor = floor((strlen($computer_size) - 1) / 3);
         $human_size = sprintf("%.{$decimals}f", $computer_size / pow(1024, $factor)) . @$sz[$factor];
 
-        $item_id = $one_id["item_id"];
+        $item_id = $one_id['item_id'];
         $fp = new ZoomifyFileProcessor();
         list($root, $ext) = $fp->getRootAndDotExtension($filename);
         $sourcePath = $root . '_zdata';
-        $destination = str_replace("/original/", "/zoom_tiles/", $sourcePath);
+        $destination = str_replace('/original/', '/zoom_tiles/', $sourcePath);
 
         if ($computer_size > $max_picture_size) {
-            print "Picture too big, skipped : $filename ($human_size)\n";
+            echo __('Picture too big, skipped: %s (%s)', $filename, $human_size) . "\n";
         }
         elseif (file_exists($destination)) {
-            print "This picture has already been tiled ($destination) : $human_size ($computer_size)\n";
+            echo __('This picture has already been tiled (%s): %s (%d bytes)', $destination, $human_size, $computer_size) . "\n";
         }
         else {
-            print "En cours : ".$computer_size."\n";
+            echo __('Processing... (file size: %d)', $computer_size) . "\n";
             $fp->ZoomifyProcess($filename);
-            rename($sourcePath,$destination);
-            print "Tiling $filename [$item_id]\n";
+            rename($sourcePath, $destination);
+            echo __('Tiled %s [#%d]', $filename, $item_id) . "\n";
         }
     }
 
-    print "\n";
-    print "Process completed.\n";
-    print "\n";
+    echo "\n";
+    echo __('Process completed.') . "\n";
+    echo "\n";
     exit;
 ?>
