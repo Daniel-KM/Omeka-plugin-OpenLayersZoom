@@ -6,6 +6,8 @@
     * You should edit manually the collection id, the item ids or set "$all" to
     * true. In all cases, processed files are not retiled.
     *
+    *The process can be launched a second time to check processed files easily.
+    *
     * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
     * @author Sylvain Machefert - Bordeaux 3
     */
@@ -15,6 +17,9 @@
     ini_set('memory_limit', '1024M');
     // max_picture_size in bytes, to prevent memory errors for big files.
     $max_picture_size = 256000000;
+
+    // Set this to "true" to print tiled files and non-images files too.
+    $all_messages = false;
 
     // The collection id to process.
     $collection_id = 0;
@@ -111,7 +116,9 @@
     foreach ($file_ids as $one_id) {
         $filename = $originalDir . $one_id['filename'];
         if (!preg_match($supportedFormatRegEx, $filename)) {
-            echo __('Not a picture, skipped: %s', $filename) . "\n";
+            if ($all_messages) {
+                echo __('Not a picture, skipped: %s', $filename) . "\n";
+            }
             continue;
         }
 
@@ -131,7 +138,9 @@
             echo __('Picture too big, skipped: %s (%s)', $filename, $human_size) . "\n";
         }
         elseif (file_exists($destination)) {
-            echo __('This picture has already been tiled (%s): %s (%d bytes)', $destination, $human_size, $computer_size) . "\n";
+            if ($all_messages) {
+                echo __('This picture has already been tiled (%s): %s (%d bytes)', $destination, $human_size, $computer_size) . "\n";
+            }
         }
         else {
             echo __('Processing... (file size: %d)', $computer_size) . "\n";
@@ -143,6 +152,13 @@
 
     echo "\n";
     echo __('Process completed.') . "\n";
+    echo "\n";
+    if ($all_messages) {
+        echo __('The process can be launched a second time without "all_messages" to check unprocessed files easily.');
+    }
+    else {
+        echo __('The process can be launched a second time to check unprocessed files easily.');
+    }
     echo "\n";
     exit;
 ?>
