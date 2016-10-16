@@ -151,9 +151,28 @@
             echo __('Processing file #%d "%s" (item #%d, size: %s)...',
                 $file_id, $filename, $item_id, $human_size) . "\n";
             $fp->ZoomifyProcess($filepath);
+
+            // Create the directory if not exists (needed with some special
+            // storages).
+            $parentDestination = dirname($destination);
+            if (!file_exists($parentDestination)) {
+                $result = mkdir($parentDestination, 0775, true);
+                if (!$result) {
+                    echo __('Fatal Error') . "\n";
+                    echo __('Unable to create the directory "%s" for file #%d "%s" (item #%d)',
+                        $parentDestination, $file_id, $filename, $item_id, $human_size) . "\n";
+                    echo __('Check rights.') . "\n";
+                    exit;
+                }
+            }
+            elseif (!is_dir($parentDestination)) {
+                echo __('Fatal Error') . "\n";
+                echo __('Path %s" is not a directory for file #%d "%s" (item #%d)',
+                    $parentDestination, $file_id, $filename, $item_id, $human_size) . "\n";
+                exit;
+            }
+
             rename($sourcePath, $destination);
-            echo __('Tiled file #%d "%s" (item #%d)',
-                $file_id, $filename, $item_id) . "\n";
         }
     }
 
