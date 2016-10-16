@@ -21,8 +21,8 @@
     // Set this to "true" to print tiled files and non-images files too.
     $all_messages = false;
 
-    // The collection id to process.
-    $collection_id = 0;
+    // The collection ids to process.
+    $collection_ids = array();
     // Or, when no collection is set, the list of item ids.
     $item_ids = array();
     // Or, when collection and items are not set, images of all the items.
@@ -35,7 +35,7 @@
     $except_files_ids = array();
 
     // Main checks.
-    $collection_id = (integer) $collection_id;
+    $collection_ids = array_filter(array_map('intval', $collection_ids));
     $item_ids = array_filter(array_map('intval', $item_ids));
     $except_collection_ids = array_filter(array_map('intval', $except_collection_ids));
     $except_items_ids = array_filter(array_map('intval', $except_items_ids));
@@ -46,8 +46,8 @@
     require_once('OpenLayersZoomPlugin.php');
     require_once('libraries/OpenLayersZoom/Zoomify/ZoomifyFileProcessor.php');
 
-    if (empty($collection_id) && empty($item_ids) && !$all) {
-        echo __('Please provide a collection id, a list of item ids or set "$all" to true directly in this script.') . "\n";
+    if (empty($collection_ids) && empty($item_ids) && !$all) {
+        echo __('Please provide a list of collection or item ids or set "$all" to true directly in this script.') . "\n";
         die;
     }
 
@@ -81,15 +81,15 @@
     FROM {$db->File} files, {$db->Item} items
     WHERE files.item_id = items.id ";
 
-    // Process a collection.
-    if ($collection_id > 0) {
-        $sql .= " AND items.collection_id = $collection_id";
+    // Process collections.
+    if ($collection_ids) {
+        $sql .= " AND items.collection_id IN (". implode(',', $collection_ids) . ")";
     }
-    // Process an item.
+    // Process items.
     elseif ($item_ids) {
         $sql .= " AND items.id IN (". implode(',', $item_ids) . ")";
     }
-    // Process all items.
+    // Process all files.
     elseif ($all) {
         // Nothing to add.
     }
