@@ -110,16 +110,40 @@ class OpenLayersZoom_Creator
      *
      * @param string|object $file
      *   Filename or file object.
+     * @param boolean|null $absolute If null, use the user option, else check
+     *   and add the base url when true, and remove the base url when false.
      *
      * @return string
      *   Url where xml data and tiles are stored.
      */
-    public function getZDataWeb($file)
+    public function getZDataWeb($file, $absolute = null)
     {
         $filename = is_string($file) ? $file : $file->filename;
         list($root, $extension) = $this->getRootAndExtension($filename);
         $zoom_tiles_web = get_option('openlayerszoom_tiles_web');
-        $zoom_tiles_web = strpos($zoom_tiles_web, 'http') === 0 ? $zoom_tiles_web : url($zoom_tiles_web);
+        $isUrlAbsolute = strpos($zoom_tiles_web, 'https://') === 0 || strpos($zoom_tiles_web, 'http://') === 0;
+        // Use the absolute or the relative path according to the user option.
+        if (is_null($absolute)) {
+            if (!$isUrlAbsolute) {
+                $zoom_tiles_web = url($zoom_tiles_web);
+            }
+        }
+        // Force absolute url.
+        elseif ($absolute) {
+            if (!$isUrlAbsolute) {
+                $zoom_tiles_web = absolute_url($zoom_tiles_web);
+            }
+        }
+        // Force relative url.
+        else {
+            if ($isUrlAbsolute) {
+                $serverUrlHelper = new Zend_View_Helper_ServerUrl;
+                $serverUrl = $serverUrlHelper->serverUrl();
+                if (strpos($zoom_tiles_web, $serverUrl) === 0) {
+                    $zoom_tiles_web = substr($zoom_tiles_web, strlen($serverUrl));
+                }
+            }
+        }
         return $zoom_tiles_web . '/' . $root . OpenLayersZoom_Creator::ZOOM_FOLDER_EXTENSION;
     }
 
