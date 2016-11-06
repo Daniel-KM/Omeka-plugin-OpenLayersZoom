@@ -122,7 +122,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
      */
     public function getTileUrl($file = null)
     {
-        if ($file == null) {
+        if ($file === null) {
             $file = get_current_record('file');
         }
         if (empty($file)) {

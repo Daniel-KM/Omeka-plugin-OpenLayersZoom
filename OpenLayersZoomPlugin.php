@@ -113,7 +113,13 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $post = $args['post'];
 
-        $post['openlayerszoom_tiles_dir'] = realpath(trim($post['openlayerszoom_tiles_dir']));
+        $openLayersZoomTilesDir = trim($post['openlayerszoom_tiles_dir']);
+        if (!empty($openLayersZoomTilesDir)) {
+            $openLayersZoomTilesDir = realpath($openLayersZoomTilesDir);
+        }
+        $post['openlayerszoom_tiles_dir'] = empty($openLayersZoomTilesDir)
+            ? FILES_DIR . DIRECTORY_SEPARATOR . 'zoom_tiles'
+            : $openLayersZoomTilesDir;
 
         foreach ($this->_options as $optionKey => $optionValue) {
             if (isset($post[$optionKey])) {
