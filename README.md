@@ -14,6 +14,9 @@ code was built for [OldsMapOnline].
 
 Tiles that are created follow the [Zoomify] standard.
 
+This plugin is upgradable to [Omeka S] via the plugin [Upgrade to Omeka S], that
+installs the module [IIIF Server].
+
 Visit the [OpenLayers Zoom demo] for more info.
 
 
@@ -152,9 +155,9 @@ The upgrade for Omeka 2.0 has been built for [Mines ParisTech].
 Copyright
 ---------
 
-* @copyright Daniel Berthereau, 2013-2015
-* @copyright Peter Binkley, 2012-2013
-* @copyright Matt Miller, 2012
+* Copyright Daniel Berthereau, 2013-2017
+* Copyright Peter Binkley, 2012-2013
+* Copyright Matt Miller, 2012
 
 See copyrights for libraries in files inside `helpers` folder.
 
@@ -164,6 +167,9 @@ See copyrights for libraries in files inside `helpers` folder.
 [OpenLayers]: http://www.openlayers.org
 [OldsMapOnline]: http://www.oldmapsonline.org
 [Zoomify]: http://www.zoomify.com
+[Omeka S]: https://omeka.org/s
+[Upgrade to Omeka S]: https://github.com/Daniel-KM/UpgradeToOmekaS
+[IIIF Server]: https://github.com/Daniel-KM/Omeka-S-module-IiifServer
 [OpenLayers Zoom demo]: http://thisismattmiller.com/zoom
 [OpenLayers Zoom]: https://github.com/thisismattmiller/OpenLayers-Omeka-Zoom-Plugin
 [ImageMagick]: http://www.imagemagick.org
