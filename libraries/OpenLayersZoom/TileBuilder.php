@@ -4,7 +4,7 @@
  *
  * @package OpenLayersZoom
  */
-class OpenLayersZoom_Creator
+class OpenLayersZoom_TileBuilder
 {
     /**
      * @var string Extension added to a folder name to store data and tiles.
@@ -14,37 +14,28 @@ class OpenLayersZoom_Creator
     /**
      * Passed a file name, it will initilize the zoomify and cut the tiles.
      *
-     * @param filename of image
+     * @param string $filename Filename of image (storage id).
      */
     public function createTiles($filename)
     {
-        require_once dirname(__FILE__)
-            . DIRECTORY_SEPARATOR . 'Zoomify'
+        require_once dirname(dirname(dirname(__FILE__)))
+            . DIRECTORY_SEPARATOR . 'vendor'
+            . DIRECTORY_SEPARATOR . 'daniel-km'
+            . DIRECTORY_SEPARATOR . 'zoomify'
+            . DIRECTORY_SEPARATOR . 'src'
             . DIRECTORY_SEPARATOR . 'Zoomify.php';
 
-        // Tiles are built in-place, in a subdir of the original image folder.
-        // TODO Add a destination path to use local server path and to avoid move.
-        $originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
-        list($root, $ext) = $this->getRootAndExtension($filename);
-        $sourcePath = $originalDir . $root . OpenLayersZoom_Creator::ZOOM_FOLDER_EXTENSION;
+        // Parameters of the tile processor.
+        $params = array();
+        $params['destinationRemove'] = true;
 
-        $zoomify = new Zoomify($originalDir);
-        $zoomify->zoomifyObject($filename, $originalDir);
+        $filepath = FILES_DIR
+            . DIRECTORY_SEPARATOR . 'original'
+            . DIRECTORY_SEPARATOR . $filename;
+        $destination = $this->getZDataDir($filename);
 
-       // Move the tiles into their storage directory.
-       if (file_exists($sourcePath)) {
-            // Check if destination folder exists, else create it.
-            $destinationPath = $this->getZDataDir($filename);
-            if (!is_dir(dirname($destinationPath))) {
-                $result = mkdir(dirname($destinationPath), 0755, true);
-                if (!$result) {
-                    $message = __('Unable to create destination directory: "%s" for file "%s".', $destinationPath, basename($filename));
-                    _log($message, Zend_Log::WARN);
-                    throw new Omeka_Storage_Exception($message);
-                }
-            }
-            $result = rename($sourcePath, $destinationPath);
-        }
+        $zoomify = new DanielKm\Zoomify\Zoomify($params);
+        $zoomify->process($filepath, $destination);
     }
 
     /**
@@ -101,7 +92,8 @@ class OpenLayersZoom_Creator
     {
         $filename = is_string($file) ? $file : $file->filename;
         list($root, $extension) = $this->getRootAndExtension($filename);
-        return get_option('openlayerszoom_tiles_dir') . DIRECTORY_SEPARATOR . $root . OpenLayersZoom_Creator::ZOOM_FOLDER_EXTENSION;
+        return get_option('openlayerszoom_tiles_dir')
+            . DIRECTORY_SEPARATOR . $root . OpenLayersZoom_TileBuilder::ZOOM_FOLDER_EXTENSION;
     }
 
     /**
@@ -144,7 +136,7 @@ class OpenLayersZoom_Creator
                 }
             }
         }
-        return $zoom_tiles_web . '/' . $root . OpenLayersZoom_Creator::ZOOM_FOLDER_EXTENSION;
+        return $zoom_tiles_web . '/' . $root . OpenLayersZoom_TileBuilder::ZOOM_FOLDER_EXTENSION;
     }
 
     /**

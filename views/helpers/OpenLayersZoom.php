@@ -16,7 +16,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
      */
     public function __construct()
     {
-        $this->_creator = new OpenLayersZoom_Creator();
+        $this->_creator = new OpenLayersZoom_TileBuilder();
     }
 
     /**

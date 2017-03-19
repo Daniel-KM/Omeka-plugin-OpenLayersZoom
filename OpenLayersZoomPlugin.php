@@ -2,7 +2,7 @@
 /**
  * OpenLayers Zoom: an OpenLayers based image zoom widget.
  *
- * @copyright Daniel Berthereau, 2013-2015
+ * @copyright Daniel Berthereau, 2013-2017
  * @copyright Peter Binkley, 2012-2013
  * @copyright Matt Miller, 2012
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
@@ -168,7 +168,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
 
         // Retrieve image files from the item.
         $view = get_view();
-        $creator = new OpenLayersZoom_Creator();
+        $creator = new OpenLayersZoom_TileBuilder();
         foreach($item->Files as $file) {
             if ($file->hasThumbnail()
                     && preg_match($supportedFormatRegEx, $file->filename)
@@ -221,7 +221,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         // Only checked values are posted.
         $filesave = false;
         $view = get_view();
-        $creator = new OpenLayersZoom_Creator();
+        $creator = new OpenLayersZoom_TileBuilder();
         $files = $creator->getFilesById($item);
         foreach ($post as $key => $value) {
             // Key is the file id of the stored image, value is the filename.
@@ -246,7 +246,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         $file = $args['record'];
         $item = $file->getItem();
 
-        $creator = new OpenLayersZoom_Creator();
+        $creator = new OpenLayersZoom_TileBuilder();
         $creator->removeZDataDir($file);
     }
 

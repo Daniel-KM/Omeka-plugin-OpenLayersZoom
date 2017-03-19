@@ -1,0 +1,51 @@
+{
+    "name": "daniel-km/zoomify",
+    "description": "Stand-alone zoomify tile generator (format Zoomify) for use with OpenSeadragon, OpenLayers and various viewers.",
+    "type": "library",
+    "license": "GPL-3.0",
+    "authors" : [
+        {
+            "name": "Adam Smith",
+            "email": "asmith@agile-software.com"
+        },
+        {
+            "name": "Wes Wright",
+            "homepage": "http://greengaloshes.cc"
+        },
+        {
+            "name": "Justin Henry",
+            "homepage": "http://greengaloshes.cc"
+        },
+        {
+            "name": "Daniel Berthereau",
+            "email": "daniel.packagist@berthereau.net",
+            "homepage": "http://www.daniel.berthereau.net"
+        }
+    ],
+    "keywords": [
+        "openseadragon",
+        "openlayers",
+        "zoomify",
+        "zoom",
+        "zoomable",
+        "tiled",
+        "image",
+        "gd",
+        "imagemagick",
+        "imagick",
+        "stand-alone"
+    ],
+    "support": {
+        "email": "daniel.support@berthereau.net",
+        "issues": "https://github.com/Daniel-KM/LibraryZoomify/issues",
+        "source": "https://github.com/Daniel-KM/LibraryZoomify"
+    },
+    "autoload": {
+        "psr-4": {
+            "DanielKm\\Zoomify\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0"
+    }
+}

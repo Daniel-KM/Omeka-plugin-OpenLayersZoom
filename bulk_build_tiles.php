@@ -34,6 +34,11 @@
     $except_items_ids = array();
     $except_files_ids = array();
 
+    // Parameters of the tile processor.
+    $params = array();
+    // A check is done here and not by the processor.
+    $params['destinationRemove'] = true;
+
     // Main checks.
     $collection_ids = array_filter(array_map('intval', $collection_ids));
     $item_ids = array_filter(array_map('intval', $item_ids));
@@ -41,13 +46,18 @@
     $except_items_ids = array_filter(array_map('intval', $except_items_ids));
     $except_files_ids = array_filter(array_map('intval', $except_files_ids));
 
-    require_once dirname(dirname(dirname(__FILE__))) . '/bootstrap.php';
-    require_once(APP_DIR . '/libraries/globals.php');
-    require_once('OpenLayersZoomPlugin.php');
-    require_once('libraries/OpenLayersZoom/Zoomify/ZoomifyFileProcessor.php');
+    require_once dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'bootstrap.php';
+    require_once APP_DIR . DIRECTORY_SEPARATOR . 'libraries' . DIRECTORY_SEPARATOR . 'globals.php';
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'OpenLayersZoomPlugin.php';
+    require_once dirname(__FILE__)
+        . DIRECTORY_SEPARATOR . 'vendor'
+        . DIRECTORY_SEPARATOR . 'daniel-km'
+        . DIRECTORY_SEPARATOR . 'zoomify'
+        . DIRECTORY_SEPARATOR . 'src'
+        . DIRECTORY_SEPARATOR . 'Zoomify.php';
 
     if (empty($collection_ids) && empty($item_ids) && !$all) {
-        echo __('Please provide a list of collection or item ids or set "$all" to true directly in this script.') . "\n";
+        echo __('Please provide a list of collection or item ids or set "$all" to true directly in this script.') . PHP_EOL;
         die;
     }
 
@@ -107,12 +117,13 @@
     $file_ids = $db->fetchAll($sql);
 
     if (empty($file_ids)) {
-        echo __('No file to process: check the selection.') . "\n";
+        echo __('No file to process: check the selection.') . PHP_EOL;
         exit;
     }
 
     $originalDir = FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR;
 
+    $zoomify = new \DanielKm\Zoomify\Zoomify($params);
     foreach ($file_ids as $one_id) {
         $filename = $one_id['filename'];
         $filepath = $originalDir . $filename;
@@ -121,7 +132,7 @@
         if (!preg_match($supportedFormatRegEx, $filename)) {
             if ($all_messages) {
                 echo __('Not a picture, skipped: #%d "%s" (item #%d)',
-                    $file_id, $filename, $item_id) . "\n";
+                    $file_id, $filename, $item_id) . PHP_EOL;
             }
             continue;
         }
@@ -132,59 +143,38 @@
         $factor = floor((strlen($computer_size) - 1) / 3);
         $human_size = sprintf("%.{$decimals}f", $computer_size / pow(1024, $factor)) . @$sz[$factor];
 
-        $fp = new ZoomifyFileProcessor();
-        list($root, $ext) = $fp->getRootAndDotExtension($filepath);
+        $extension = pathinfo($filepath, PATHINFO_EXTENSION);
+        $root = $extension ? substr($filepath, 0, strrpos($filepath, '.')) : $filepath;
         $sourcePath = $root . '_zdata';
         $destination = str_replace('/original/', '/zoom_tiles/', $sourcePath);
 
         if ($computer_size > $max_picture_size) {
             echo __('Picture too big, skipped: #%d "%s" (item #%d, size: %s)',
-                $file_id, $filename, $item_id, $human_size) . "\n";
+                $file_id, $filename, $item_id, $human_size) . PHP_EOL;
         }
         elseif (file_exists($destination)) {
             if ($all_messages) {
                 echo __('This picture has already been tiled: #%d "%s" (item #%d, size: %s)',
-                    $file_id, $filename, $item_id, $human_size) . "\n";
+                    $file_id, $filename, $item_id, $human_size) . PHP_EOL;
             }
         }
         else {
             echo __('Processing file #%d "%s" (item #%d, size: %s)...',
-                $file_id, $filename, $item_id, $human_size) . "\n";
-            $fp->ZoomifyProcess($filepath);
+                $file_id, $filename, $item_id, $human_size) . PHP_EOL;
 
-            // Create the directory if not exists (needed with some special
-            // storages).
-            $parentDestination = dirname($destination);
-            if (!file_exists($parentDestination)) {
-                $result = mkdir($parentDestination, 0775, true);
-                if (!$result) {
-                    echo __('Fatal Error') . "\n";
-                    echo __('Unable to create the directory "%s" for file #%d "%s" (item #%d)',
-                        $parentDestination, $file_id, $filename, $item_id, $human_size) . "\n";
-                    echo __('Check rights.') . "\n";
-                    exit;
-                }
-            }
-            elseif (!is_dir($parentDestination)) {
-                echo __('Fatal Error') . "\n";
-                echo __('Path %s" is not a directory for file #%d "%s" (item #%d)',
-                    $parentDestination, $file_id, $filename, $item_id, $human_size) . "\n";
-                exit;
-            }
-
-            rename($sourcePath, $destination);
+            $zoomify->process($filepath, $destination);
         }
     }
 
-    echo "\n";
-    echo __('Process completed.') . "\n";
-    echo "\n";
+    echo PHP_EOL;
+    echo __('Process completed.') . PHP_EOL;
+    echo PHP_EOL;
     if ($all_messages) {
         echo __('The process can be launched a second time without "all_messages" to check unprocessed files easily.');
     }
     else {
         echo __('The process can be launched a second time to check unprocessed files easily.');
     }
-    echo "\n";
+    echo PHP_EOL;
     exit;
 ?>
