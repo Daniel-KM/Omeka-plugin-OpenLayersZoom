@@ -162,8 +162,11 @@ class OpenLayersZoom_TileBuilder
             // We check a derivative, because the original image
             // is not always a jpg one.
             list($root, $ext) = $this->getRootAndExtension($file);
-            if (file_exists(FILES_DIR . DIRECTORY_SEPARATOR . 'fullsize' . DIRECTORY_SEPARATOR . $root . '.jpg')) {
-                $this->_rrmdir($removeDir);
+            $check = FILES_DIR
+                . DIRECTORY_SEPARATOR . 'fullsize'
+                . DIRECTORY_SEPARATOR . $root . '.jpg';
+            if (file_exists($check)) {
+                $this->rrmdir($removeDir);
             }
         }
     }
@@ -189,22 +192,34 @@ class OpenLayersZoom_TileBuilder
     /**
      * Removes directories recursively.
      *
-     * @param string $dirPath Directory name.
-     *
-     * @return boolean
+     * @param string $dir Directory name.
+     * @return bool
      */
-    protected function _rrmdir($dirPath)
+    private function rrmdir($dir)
     {
-        $files = array_diff(scandir($dirPath), array('.', '..'));
+        if (!file_exists($dir)
+                || !is_dir($dir)
+                || !is_readable($dir)
+                || !is_writable($dir)
+            ) {
+            return false;
+        }
+
+        $scandir = scandir($dir);
+        if (!is_array($scandir)) {
+            return false;
+        }
+
+        $files = array_diff($scandir, array('.', '..'));
         foreach ($files as $file) {
-            $path = $dirPath . DIRECTORY_SEPARATOR . $file;
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path)) {
-                $this->_rrmDir($path);
-            }
-            else {
+                $this->rrmdir($path);
+            } else {
                 unlink($path);
             }
         }
-        return rmdir($dirPath);
+
+        return @rmdir($dir);
     }
 }

@@ -82,7 +82,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
     {
         // Nuke the zoom tiles directory.
         $tilesDir = get_option('openlayerszoom_tiles_dir');
-        $this->_rrmdir($tilesDir);
+        $this->rrmdir($tilesDir);
 
         $this->_uninstallOptions();
     }
@@ -403,21 +403,34 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
     /**
      * Removes directories recursively.
      *
-     * @param string $dirPath Directory name.
-     * @return boolean
+     * @param string $dir Directory name.
+     * @return bool
      */
-    protected function _rrmdir($dirPath)
+    private function rrmdir($dir)
     {
-        $files = array_diff(scandir($dirPath), array('.', '..'));
+        if (!file_exists($dir)
+                || !is_dir($dir)
+                || !is_readable($dir)
+                || !is_writable($dir)
+            ) {
+            return false;
+        }
+
+        $scandir = scandir($dir);
+        if (!is_array($scandir)) {
+            return false;
+        }
+
+        $files = array_diff($scandir, array('.', '..'));
         foreach ($files as $file) {
-            $path = $dirPath . DIRECTORY_SEPARATOR . $file;
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path)) {
-                $this->_rrmDir($path);
-            }
-            else {
+                $this->rrmdir($path);
+            } else {
                 unlink($path);
             }
         }
-        return rmdir($dirPath);
+
+        return @rmdir($dir);
     }
 }
