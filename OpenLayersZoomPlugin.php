@@ -244,7 +244,9 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookBeforeDeleteFile($args)
     {
         $file = $args['record'];
-        $item = $file->getItem();
+        if (!$file->hasThumbnail()) {
+            return;
+        }
 
         $creator = new OpenLayersZoom_TileBuilder();
         $creator->removeZDataDir($file);

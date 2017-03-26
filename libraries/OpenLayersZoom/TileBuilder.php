@@ -150,7 +150,7 @@ class OpenLayersZoom_TileBuilder
     public function removeZDataDir($file)
     {
         $file = is_string($file) ? $file : $file->filename;
-        if ($file == '' || $file == '/') {
+        if ($file == '' || $file == DIRECTORY_SEPARATOR) {
             return;
         }
 
