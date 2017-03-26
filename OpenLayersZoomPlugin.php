@@ -73,6 +73,8 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
             copy(FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR . 'index.html', $tilesDir . DIRECTORY_SEPARATOR . 'index.html');
             @chmod($tilesDir . DIRECTORY_SEPARATOR . 'index.html', 0644);
         }
+
+        $this->registerArchiveRepertory();
     }
 
     /**
@@ -85,6 +87,17 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         $this->rrmdir($tilesDir);
 
         $this->_uninstallOptions();
+
+        $derivatives = get_option('archive_repertory_derivative_folders');
+        if ($derivatives) {
+            $derivatives = explode(',', $derivatives);
+            foreach ($derivatives as $key => $derivative) {
+                if (strpos(trim($derivative), 'zoom_tiles') === 0) {
+                    unset($derivatives[$key]);
+                }
+            }
+            set_option('archive_repertory_ingesters', implode(',', $derivatives));
+        }
     }
 
     /**
@@ -100,6 +113,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookConfigForm($args)
     {
+        $this->registerArchiveRepertory();
         $view = get_view();
         echo $view->partial('plugins/openlayerszoom-config-form.php');
     }
@@ -400,6 +414,27 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
                 . $html;
             return $html;
         }
+    }
+
+    /**
+     * Helper to register the tile for ArchiveRepertory.
+     */
+    protected function registerArchiveRepertory()
+    {
+        if (!plugin_is_active('ArchiveRepertory')) {
+            return;
+        }
+
+        $derivatives = get_option('archive_repertory_derivative_folders');
+        $derivatives = explode(',', $derivatives);
+        foreach ($derivatives as $key => $derivative) {
+            if (strpos(trim($derivative), 'zoom_tiles') === 0) {
+                return;
+            }
+        }
+        $derivatives[] = 'zoom_tiles|_zdata';
+        $derivatives = implode(',', $derivatives);
+        set_option('archive_repertory_derivative_folders', $derivatives);
     }
 
     /**
