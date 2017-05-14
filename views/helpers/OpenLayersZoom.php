@@ -129,23 +129,23 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
             return;
         }
 
-        $tileUrl = '';
         // Does it use a IIPImage server?
         if ($this->_creator->useIIPImageServer()) {
             $item = $file->getItem();
             $tileUrl = $item->getElementTexts('Item Type Metadata', 'Tile Server URL');
-            $tileUrl = empty($tileUrl) ? '' : trim($tileUrl[0]->text);
+            if ($tileUrl) {
+                return trim($tileUrl[0]->text);
+            }
         }
 
         // Does it have zoom tiles?
-        elseif (file_exists($this->_creator->getZDataDir($file))) {
+        if (file_exists($this->_creator->getZDataDir($file))) {
             // fetch identifier, to use in link to tiles for this jp2 - pbinkley
             // $jp2 = item('Dublin Core', 'Identifier') . '.jp2';
             // $tileUrl = ZOOMTILES_WEB . '/' . $jp2;
             $tileUrl = $this->_creator->getZDataWeb($file);
-    }
-
-        return $tileUrl;
+            return $tileUrl;
+        }
     }
 
     /**
