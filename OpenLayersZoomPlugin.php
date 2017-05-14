@@ -362,7 +362,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
                     <label title="' . $title . '" style="width:auto;' . $style_color . ';" for="zoomThis_' . $file->id . '">'
                     . file_markup($file, array('imageSize'=>'thumbnail'))
                     . $isChecked . '<br />
-                </div>';
+                </div>' . PHP_EOL;
             }
         }
 

@@ -48,7 +48,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
                     foreach ($zoomedFiles as $file) {
                         $html .= $this->_zoomFile($file);
                     }
-                    $html .= '</div>';
+                    $html .= '</div>' . PHP_EOL;
                 }
                 break;
 
@@ -57,7 +57,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
                 if ($result) {
                     $html = '<div class="openlayerszoom-images">';
                     $html .= $result;
-                    $html .= '</div>';
+                    $html .= '</div>' . PHP_EOL;
                 }
                 break;
         }
@@ -160,9 +160,9 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
 
             $target = 'map-' . $file->id;
 
-            $html = '<div id="' . $target . '" class="map"></div>';
+            $html = '<div id="' . $target . '" class="map"></div>' . PHP_EOL;
             $html .= sprintf(
-                '<script type="text/javascript">open_layers_zoom("%s",%d,%d,%s)</script>',
+                '<script type="text/javascript">open_layers_zoom("%s",%d,%d,%s);</script>' . PHP_EOL,
                 $target, $width, $height, json_encode($tileUrl . '/'));
 
             return $html;
