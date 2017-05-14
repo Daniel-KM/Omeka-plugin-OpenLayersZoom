@@ -99,13 +99,19 @@ presented as a zoomed image in the public item page.
 Currently, tiling is made without job process, so you may have to increase the
 max allowed time (and the memory limit) for process in `php.ini`.
 
+It is possible to bulk create tiles with the script `bulk_build_tiles.php`
+provided at the root of the plugin. Simply edit it, set the collections or the
+items to process and run it with the command `php -f bulk_build_tiles.php`.
+
 For huge images, it’s recommanded to create tiles offline via a specialized
 photo software, eventually with a [Zoomify] plugin, or to use a script that
-calls the `ZoomifyFileProcessor.php` library, else to use [IIPImage].
+calls the `ZoomifyFileProcessor.php` library, else to use [IIP Image].
 
-To use [IIPImage], the element `Tile Server URL` should be created in the
-`Item Type Metadata` set, and this field should be filled in the item form with
-the query url to the image.
+If an [IIP Image] server is used, you have to add the query url for each item
+that use it in the element `Tile Server URL` of the element set `Item Type Metadata`.
+This element is hard coded in the code, and is not created during the install.
+So you have to edit item types, then create this element, and add it to each
+item type you use.
 
 
 Warning
