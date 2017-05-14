@@ -13,7 +13,7 @@ creation and storage of tiles.
 This plugin uses the [OpenLayers] widget to display images and the base of the
 code was built for [OldsMapOnline].
 
-Tiles that are created follow the [Zoomify] standard.
+Tiles that are created follow the [Zoomify] format.
 
 This plugin is upgradable to [Omeka S] via the plugin [Upgrade to Omeka S], that
 installs the module [IIIF Server], that contains the same tile builder and a
@@ -111,7 +111,13 @@ If an [IIP Image] server is used, you have to add the query url for each item
 that use it in the element `Tile Server URL` of the element set `Item Type Metadata`.
 This element is hard coded in the code, and is not created during the install.
 So you have to edit item types, then create this element, and add it to each
-item type you use.
+item type you use. Only one image can be used by item and it must be uploaded
+too, because the widget should know the size of the image to compute the tiles
+to ask to the server. To check your config, set the url from the [official example]
+`http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?zoomify=/mnt/MD1/AD00/plan_CHU-4HD-01/FOND.TIF`
+in the field `Tile Server URL`, and upload an image with a size of 9911 x 6100
+pixels (width x height). If the size is different, it is not important, but some
+tiles may be misplaced. Anyway, it will proove that the plugin works.
 
 
 Warning
@@ -188,6 +194,7 @@ See copyrights for libraries in files inside `vendor` folder.
 [GD]: https://secure.php.net/manual/en/book.image.php
 [Imagick]: https://php.net/manual/en/book.imagick.php
 [ImageMagick]: https://www.imagemagick.org/
+[official example]: https://openlayers.org/en/latest/examples/zoomify.html
 [plugin issues]: https://github.com/Daniel-KM/OpenLayersZoom/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
