@@ -134,7 +134,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
         if ($this->_creator->useIIPImageServer()) {
             $item = $file->getItem();
             $tileUrl = $item->getElementTexts('Item Type Metadata', 'Tile Server URL');
-            $tileUrl = empty($tileUrl) ? '' : $tileUrl[0]->text;
+            $tileUrl = empty($tileUrl) ? '' : trim($tileUrl[0]->text);
         }
 
         // Does it have zoom tiles?
