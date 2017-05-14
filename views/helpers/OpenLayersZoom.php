@@ -163,7 +163,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
             $html = '<div id="' . $target . '" class="map"></div>' . PHP_EOL;
             $html .= sprintf(
                 '<script type="text/javascript">open_layers_zoom("%s",%d,%d,%s);</script>' . PHP_EOL,
-                $target, $width, $height, json_encode($tileUrl . '/'));
+                $target, $width, $height, json_encode(rtrim($tileUrl, '/') . '/'));
 
             return $html;
         }
