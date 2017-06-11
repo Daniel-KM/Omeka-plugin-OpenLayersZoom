@@ -76,7 +76,10 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     public function getZoomedFiles($item = null)
     {
         if ($item == null) {
-            $item = get_current_record('item');
+            $item = get_current_record('item', false);
+            if (empty($item)) {
+                return array();
+            }
         }
 
         $list = array();
@@ -122,11 +125,11 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
      */
     public function getTileUrl($file = null)
     {
-        if ($file === null) {
-            $file = get_current_record('file');
-        }
         if (empty($file)) {
-            return;
+            $file = get_current_record('file', false);
+            if (empty($file)) {
+                return;
+            }
         }
 
         // Does it use a IIPImage server?

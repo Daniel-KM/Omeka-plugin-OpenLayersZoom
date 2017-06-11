@@ -400,7 +400,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         }
         // Get the current record.
         else {
-            $record = get_current_record(strtolower($recordType));
+            $record = get_current_record(strtolower($recordType), false);
         }
         if (empty($record)) {
             return;
