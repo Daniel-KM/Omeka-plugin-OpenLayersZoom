@@ -166,7 +166,7 @@ class OpenLayersZoom_TileBuilder
                 . DIRECTORY_SEPARATOR . 'fullsize'
                 . DIRECTORY_SEPARATOR . $root . '.jpg';
             if (file_exists($check)) {
-                $this->rrmdir($removeDir);
+                $this->removeDir($removeDir, true);
             }
         }
     }
@@ -190,36 +190,45 @@ class OpenLayersZoom_TileBuilder
     }
 
     /**
-     * Removes directories recursively.
+     * Checks and removes a folder recursively.
      *
-     * @param string $dir Directory name.
+     * @param string $path Full path of the folder to remove.
+     * @param bool $evenNonEmpty Remove non empty folder. This parameter can be
+     * used with non standard folders.
      * @return bool
      */
-    private function rrmdir($dir)
+    protected function removeDir($path, $evenNonEmpty = false)
     {
-        if (!file_exists($dir)
-                || !is_dir($dir)
-                || !is_readable($dir)
-                || !is_writable($dir)
+        $path = realpath($path);
+        if (strlen($path)
+                && $path != DIRECTORY_SEPARATOR
+                && file_exists($path)
+                && is_dir($path)
+                && is_readable($path)
+                && is_writable($path)
+                && ($evenNonEmpty || count(array_diff(@scandir($path), array('.', '..'))) == 0)
             ) {
-            return false;
-        }
+                return $this->recursiveRemoveDir($path);
+            }
+    }
 
-        $scandir = scandir($dir);
-        if (!is_array($scandir)) {
-            return false;
-        }
-
-        $files = array_diff($scandir, array('.', '..'));
+    /**
+     * Removes directories recursively.
+     *
+     * @param string $dirPath Directory name.
+     * @return bool
+     */
+    protected function recursiveRemoveDir($dirPath)
+    {
+        $files = array_diff(scandir($dirPath), array('.', '..'));
         foreach ($files as $file) {
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            $path = $dirPath . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path)) {
-                $this->rrmdir($path);
+                $this->recursiveRemoveDir($path);
             } else {
                 unlink($path);
             }
         }
-
-        return @rmdir($dir);
+        return rmdir($dirPath);
     }
 }

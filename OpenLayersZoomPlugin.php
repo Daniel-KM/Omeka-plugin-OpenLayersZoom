@@ -240,8 +240,11 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         foreach ($post as $key => $value) {
             // Key is the file id of the stored image, value is the filename.
             if (strpos($key, 'open_layers_zoom_filename_') !== false) {
-                $file = $files[(int) substr($key, strlen('open_layers_zoom_filename_'))];
-                if (!$view->openLayersZoom()->isZoomed($file)) {
+                $file = (int) substr($key, strlen('open_layers_zoom_filename_'));
+                if (empty($files[$file])) {
+                    continue;
+                }
+                if (!$view->openLayersZoom()->isZoomed($files[$file])) {
                     $creator->createTiles($value);
                 }
                 $filesaved = true;
