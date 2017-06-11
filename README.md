@@ -102,6 +102,9 @@ max allowed time (and the memory limit) for process in `php.ini`.
 It is possible to bulk create tiles with the script `bulk_build_tiles.php`
 provided at the root of the plugin. Simply edit it, set the collections or the
 items to process and run it with the command `php -f bulk_build_tiles.php`.
+*IMPORTANT*: Check or update the rights of the subfolder of `files/zoom_tiles`,
+in particular when the folder of items were created by the server and you try to
+update them.
 
 For huge images, it’s recommanded to create tiles offline via a specialized
 photo software, eventually with a [Zoomify] plugin, or to use a script that

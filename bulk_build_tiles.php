@@ -6,7 +6,11 @@
     * You should edit manually the collection id, the item ids or set "$all" to
     * true. In all cases, processed files are not retiled.
     *
-    *The process can be launched a second time to check processed files easily.
+    * The process can be launched a second time to check processed files easily.
+    *
+    * *IMPORTANT*: Check or update the rights of the subfolder of `files/zoom_tiles`,
+    * in particular when the folder of items were created by the server and you
+    * try to update them.
     *
     * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
     * @author Sylvain Machefert - Bordeaux 3
