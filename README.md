@@ -43,32 +43,67 @@ your needs, you may use the default hook or add the code below in the
 `items/show.php` file of your theme or anywhere else.
 
 * Default hook `public_items_show`
-    - This hook is set by default, but an option allows to remove it.
+
+This hook is set by default, but an option allows to remove it.
 
 * Helper (recommended)
-    - This can be used anywhere in the theme. The record can be an item or a
-    file.
 
-```
+This can be used anywhere in the theme. The record can be an item or a file.
+
+```php
     <?php echo $this->openLayersZoom()->zoom($record); ?>
 ```
 
+If a collection or an item contains multiple files and some are zoomed, and some
+are not, you have to check if the image is zoomed. The `files_for_item()` may be
+replaced by such lines:
+
+```php
+    <h3><?php echo __('Files'); ?></h3>
+    <div id="item-images">
+    <?php
+    foreach ($item->getFiles() as $file):
+        $isFileZoomed = $this->openLayersZoom()->isZoomed($file);
+        // Zoom file markup.
+        if ($isFileZoomed):
+            echo $this->openLayersZoom()->zoom($file);
+        // Standard file markup (see options in globals.php if needed).
+        else:
+            echo file_markup($file, array(), array('class' => 'item-file'));
+        endif;
+    endforeach;
+    ?>
+    </div>
+```
+
+Other useful functions, depending on your collection (when there are multiple
+file on an item and some are zoomed, other ones not):
+
+```php
+    $filesCount = $item->fileCount();
+    $zoomCount = $this->openLayersZoom()->zoomedFilesCount($item);
+    $hasZoomedImage = (boolean) $zoomCount;
+    $zoomedFiles = $this->openLayersZoom()->getZoomedFiles($item);
+```
+
 * Shortcode
+
     - Currently, only one shortcode can be added by page.
     - In a field that can be shortcoded: `[zoom]` (default is the current item
     or file).
     - Default in theme: `<?php echo $this->shortcodes('[zoom]'); ?>`
     - With all options:
 
-```
+```php
     <?php echo $this->shortcodes('[zoom record_id=1 record_type=item]'); ?>
 ```
 
 * Old hook `open_layers_zoom_display_file`
-    - This hook will be removed in the next release. In the `items/show.php` of
-    your theme, add:
 
-```
+This hook will be removed in the next release. In the `items/show.php` of your
+theme, add:
+
+```php
     <div class="openlayerszoom-images">
         <?php
         foreach ($item->Files as $file):
@@ -101,9 +136,22 @@ max allowed time (and the memory limit) for process in `php.ini`.
 
 It is possible to bulk create tiles with the script `bulk_build_tiles.php`
 provided at the root of the plugin. Simply edit it, set the collections or the
-items to process and run it with the command `php -f bulk_build_tiles.php`.
+items to process, and run it:
+
+```sh
+    # Go to the root of the plugin.
+    cd /path/to/my/omeka/plugins/OpenLayersZoom
+    # Edit the file to set the items to zoom (see instruction inside).
+    nano bulk_build_tiles.php
+    # To run the script.
+    php -f bulk_build_tiles.php
+```
+
+The script can be launched multiple times: if a file is already tiled, it won’t
+retiled, but skipped.
+
 *IMPORTANT*: Check or update the rights of the subfolder of `files/zoom_tiles`,
-in particular when the folder of items were created by the server and you try to
+in particular when the folder of items was created by the server and you try to
 update them.
 
 For huge images, it’s recommanded to create tiles offline via a specialized
