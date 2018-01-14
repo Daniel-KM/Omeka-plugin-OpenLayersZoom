@@ -22,7 +22,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Get the helper.
      *
-     * @return This view helper.
+     * @return OpenLayersZoom_View_Helper_OpenLayersZoom This view helper.
      */
     public function openLayersZoom()
     {
@@ -32,13 +32,14 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Returns an OpenLayersZoom to display for an item or a file.
      *
-     * @param Record $record Item or File to zoom.
+     * @param Item|File $record Item or File to zoom.
      *
      * @return html.
      */
     public function zoom($record)
     {
         $html = '';
+        $js = '';
 
         switch (get_class($record)) {
             case 'Item':
@@ -46,18 +47,26 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
                 if (!empty($zoomedFiles)) {
                     $html = '<div class="openlayerszoom-images">';
                     foreach ($zoomedFiles as $file) {
-                        $html .= $this->_zoomFile($file);
+                        list($htmlCode, $jsCode) = $this->_zoomFile($file);
+                        if ($htmlCode) {
+                            $html .= $htmlCode . PHP_EOL;
+                            $js .= $jsCode . PHP_EOL;
+                        };
                     }
                     $html .= '</div>' . PHP_EOL;
+                    if ($js) {
+                        queue_js_string($js);
+                    }
                 }
                 break;
 
             case 'File':
-                $result = $this->_zoomFile($record);
-                if ($result) {
+                list($htmlCode, $jsCode) = $this->_zoomFile($record);
+                if ($htmlCode) {
                     $html = '<div class="openlayerszoom-images">';
-                    $html .= $result;
+                    $html .= $htmlCode . PHP_EOL;
                     $html .= '</div>' . PHP_EOL;
+                    queue_js_string($jsCode);
                 }
                 break;
         }
@@ -153,22 +162,26 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
 
     /**
      * Helper to zoom a file.
+     *
+     * @param File $file
+     * @return array Html and js code.
      */
     protected function _zoomFile($file)
     {
         $tileUrl = $this->getTileUrl($file);
-        if ($tileUrl) {
-            // Grab the width/height of the original image.
-            list($width, $height, $type, $attr) = getimagesize(FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR . $file->filename);
-
-            $target = 'map-' . $file->id;
-
-            $html = '<div id="' . $target . '" class="map"></div>' . PHP_EOL;
-            $html .= sprintf(
-                '<script type="text/javascript">open_layers_zoom("%s",%d,%d,%s);</script>' . PHP_EOL,
-                $target, $width, $height, json_encode(rtrim($tileUrl, '/') . '/'));
-
-            return $html;
+        if (empty($tileUrl)) {
+            return array(null, null);
         }
+
+        // Grab the width/height of the original image.
+        list($width, $height, $type, $attr) = getimagesize(FILES_DIR . DIRECTORY_SEPARATOR . 'original' . DIRECTORY_SEPARATOR . $file->filename);
+
+        $target = 'map-' . $file->id;
+
+        $html = '<div id="' . $target . '" class="map"></div>';
+        $js = sprintf('open_layers_zoom("%s",%d,%d,%s);',
+            $target, $width, $height, json_encode(rtrim($tileUrl, '/') . '/'));
+
+        return array($html, $js);
     }
 }

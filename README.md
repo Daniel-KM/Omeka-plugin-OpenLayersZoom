@@ -224,7 +224,7 @@ The upgrade for Omeka 2.0 has been built for [Mines ParisTech].
 Copyright
 ---------
 
-* Copyright Daniel Berthereau, 2013-2017
+* Copyright Daniel Berthereau, 2013-2018
 * Copyright Peter Binkley, 2012-2013
 * Copyright Matt Miller, 2012
 
