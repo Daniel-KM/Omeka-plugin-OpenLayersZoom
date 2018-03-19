@@ -231,14 +231,14 @@ Copyright
 See copyrights for libraries in files inside `vendor` folder.
 
 
-[OpenLayers Zoom]: https://github.com/Daniel-KM/OpenLayersZoom
+[OpenLayers Zoom]: https://github.com/Daniel-KM/Omeka-plugin-OpenLayersZoom
 [Omeka]: https://omeka.org
 [IIP Image]: http://iipimage.sourceforge.net
 [OpenLayers]: http://www.openlayers.org
 [OldsMapOnline]: http://www.oldmapsonline.org
 [Zoomify]: http://www.zoomify.com
 [Omeka S]: https://omeka.org/s
-[Upgrade to Omeka S]: https://github.com/Daniel-KM/UpgradeToOmekaS
+[Upgrade to Omeka S]: https://github.com/Daniel-KM/Omeka-plugin-UpgradeToOmekaS
 [IIIF Server]: https://github.com/Daniel-KM/Omeka-S-module-IiifServer
 [OpenLayers Zoom demo]: http://thisismattmiller.com/zoom
 [OpenLayers Zoom]: https://github.com/thisismattmiller/OpenLayers-Omeka-Zoom-Plugin
@@ -246,7 +246,7 @@ See copyrights for libraries in files inside `vendor` folder.
 [Imagick]: https://php.net/manual/en/book.imagick.php
 [ImageMagick]: https://www.imagemagick.org/
 [official example]: https://openlayers.org/en/latest/examples/zoomify.html
-[plugin issues]: https://github.com/Daniel-KM/OpenLayersZoom/issues
+[plugin issues]: https://github.com/Daniel-KM/Omeka-plugin-OpenLayersZoom/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
 [Peter Binkley]: https://github.com/pbinkley

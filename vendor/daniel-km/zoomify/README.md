@@ -114,7 +114,7 @@ Copyright
 * Copyright 2005 Adam Smith (asmith@agile-software.com)
 * Copyright Wes Wright (http://greengaloshes.cc)
 * Copyright Justin Henry (http://greengaloshes.cc)
-* Copyright 2014-2017 Daniel Berthereau (Daniel.github@Berthereau.net)
+* Copyright 2014-2018 Daniel Berthereau (Daniel.github@Berthereau.net)
 
 
 [Zoomify]: https://github.com/Daniel-KM/LibraryZoomify
@@ -130,7 +130,7 @@ Copyright
 [Zoomify viewer]: http://www.zoomify.com/
 [here]: https://ecommons.cornell.edu/bitstream/handle/1813/5410/Introducing_Zoomify_Image.pdf
 [Omeka Classic]: https://omeka.org
-[OpenLayers Zoom]: https://github.com/Daniel-KM/OpenLayersZoom
+[OpenLayers Zoom]: https://github.com/Daniel-KM/Omeka-plugin-OpenLayersZoom
 [Deepzoom Library]: https://github.com/Daniel-KM/LibraryDeepzoom
 [issues]: https://github.com/Daniel-KM/LibraryZoomify/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
