@@ -256,7 +256,7 @@ class ZoomifyGD extends Zoomify
     /**
      * Load the image data.
      *
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function openImage()
     {
@@ -267,7 +267,7 @@ class ZoomifyGD extends Zoomify
      * Helper to get an image of different type (jpg, png or gif) from file.
      *
      * @param string $filepath
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function getImageFromFile($filepath)
     {
@@ -315,7 +315,7 @@ class ZoomifyGD extends Zoomify
     /**
      * Crop an image to a size.
      *
-     * @return ressource identifier of the image.
+     * @return resource Identifier of the image.
      */
     protected function imageCrop($image, $left, $upper, $right, $lower)
     {

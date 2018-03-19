@@ -174,7 +174,7 @@ class OpenLayersZoom_TileBuilder
     /**
      * Order files attached to an item by file id.
      *
-     * @param object $item.
+     * @param Item $item.
      *
      * @return array
      *  Array of files ordered by file id.

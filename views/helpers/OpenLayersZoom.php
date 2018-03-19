@@ -77,7 +77,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Get an array of all zoomed images of an item.
      *
-     * @param object $item
+     * @param Item $item
      *
      * @return array
      *   Associative array of file id and files.
@@ -103,7 +103,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Count the number of zoomed images attached to an item.
      *
-     * @param object $item
+     * @param Item $item
      *
      * @return integer
      *   Number of zoomed images attached to an item.
@@ -116,7 +116,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Determine if a file is zoomed.
      *
-     * @param object $file
+     * @param File $file
      *
      * @return boolean
      */
@@ -128,7 +128,7 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
     /**
      * Get the url to tiles or a zoomified file, if any.
      *
-     * @param object $file
+     * @param File $file
      *
      * @return string
      */
