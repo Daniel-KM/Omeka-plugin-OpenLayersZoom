@@ -55,7 +55,11 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
                     }
                     $html .= '</div>' . PHP_EOL;
                     if ($js) {
-                        queue_js_string($js);
+                        if (get_option('openlayerszoom_queue_js')) {
+                            queue_js_string($js);
+                        } else {
+                            $html .= '<script type="application/javascript">' . $js . '</script>';
+                        }
                     }
                 }
                 break;
@@ -66,7 +70,11 @@ class OpenLayersZoom_View_Helper_OpenLayersZoom extends Zend_View_Helper_Abstrac
                     $html = '<div class="openlayerszoom-images">';
                     $html .= $htmlCode . PHP_EOL;
                     $html .= '</div>' . PHP_EOL;
-                    queue_js_string($jsCode);
+                    if (get_option('openlayerszoom_queue_js')) {
+                        queue_js_string($jsCode);
+                    } else {
+                        $html .= '<script type="application/javascript">' . $jsCode . '</script>';
+                    }
                 }
                 break;
         }

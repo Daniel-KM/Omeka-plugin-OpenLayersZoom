@@ -50,6 +50,7 @@ class OpenLayersZoomPlugin extends Omeka_Plugin_AbstractPlugin
         'openlayerszoom_tiles_web' => '/zoom_tiles',
         'openlayerszoom_use_default_hook' => true,
         'openlayerszoom_use_public_head' => true,
+        'openlayerszoom_queue_js' => false,
     );
 
     /**

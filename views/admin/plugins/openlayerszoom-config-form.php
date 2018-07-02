@@ -46,4 +46,15 @@
             </p>
         </div>
     </div>
+    <div class="field">
+        <div class="two columns alpha">
+            <?php echo $this->formLabel('openlayerszoom_queue_js', __('Js queued in footer')); ?>
+        </div>
+        <div class='inputs five columns omega'>
+            <?php echo $this->formCheckbox('openlayerszoom_queue_js', true, array('checked' => (boolean) get_option('openlayerszoom_queue_js'))); ?>
+            <p class="explanation">
+                <?php echo __('If your theme lists the scripts in the footer, you can check this box, so the open layers box will be echoed in the footer too.'); ?>
+            </p>
+        </div>
+    </div>
 </fieldset>
